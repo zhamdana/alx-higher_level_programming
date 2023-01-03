@@ -1,6 +1,12 @@
 #!/usr/bin/python3
-def remove_char_at(str, n):
-    """Create a copy of the string without the character at position n."""
-    if n < 0:
-        return (str)
-    return (str[:n] + str[n+1:])
+def fizzbuzz():
+    for index in range(1, 101):
+        if index % 3 == 0 and index % 5 == 0:
+            print("FizzBuzz", end="")
+        elif index % 3 == 0:
+            print("Fizz", end="")
+        elif index % 5 == 0:
+            print("Buzz", end="")
+        else:
+            print("{}".format(index), end="")
+        print(" ", end="")
