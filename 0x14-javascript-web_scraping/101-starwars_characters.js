@@ -1,30 +1,33 @@
 #!/usr/bin/node
-const request = require('request');
-const url = 'http://swapi.co/api/films/';
-let id = parseInt(process.argv[2], 10);
-let characters = [];
 
-request(url, function (err, response, body) {
-  if (err == null) {
-    const resp = JSON.parse(body);
-    const results = resp.results;
-    if (id < 4) {
-      id += 3;
-    } else {
-      id -= 3;
-    }
-    for (let i = 0; i < results.length; i++) {
-      if (results[i].episode_id === id) {
-        characters = results[i].characters;
-        break;
+// 1. Create a new function that returns a promise
+function firstFunction (char) {
+  const request = require('request');
+  return new Promise((resolve, reject) => {
+    request(char, function (err, res, body) {
+      if (res.statusCode === 200) {
+        resolve(JSON.parse(body).name);
+      } else {
+        reject(err);
       }
-    }
-    for (let j = 0; j < characters.length; j++) {
-      request(characters[j], function (err, response, body) {
-        if (err == null) {
-          console.log(JSON.parse(body).name);
-        }
-      });
-    }
+    });
+  });
+}
+
+// 2. Create an async function
+async function secondFunction (body) {
+  for (const char of JSON.parse(body).characters) {
+    console.log(await firstFunction(char));
   }
-});
+}
+
+if (process.argv.length === 3) {
+  const request = require('request');
+  request(`https://swapi-api.hbtn.io/api/films/${process.argv[2]}/`, function (err, res, body) {
+    if (res.statusCode === 200) {
+      secondFunction(body);
+    } else {
+      console.log(err);
+    }
+  });
+}
